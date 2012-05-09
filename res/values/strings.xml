@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, SongdoroActivity!</string>
+    <string name="app_name">Songdoro</string>
+    <string name="txtPlaylistnameHint">Playlist name</string>
+    <string name="tvMinutes">Minutes</string>
+    <string name="btnCreatePlaylist">Create</string>
+
+</resources>
