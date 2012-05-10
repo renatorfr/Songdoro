@@ -6,5 +6,6 @@
     <string name="txtPlaylistnameHint">Playlist name</string>
     <string name="tvMinutes">Minutes</string>
     <string name="btnCreatePlaylist">Create</string>
+    <string name="tvPlaylistDuration">30</string>
 
 </resources>

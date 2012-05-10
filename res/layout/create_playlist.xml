@@ -30,16 +30,19 @@
 
         <TextView
             android:id="@+id/tvPlaylistDuration"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="10sp" />
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="10sp"
+            android:text="@string/tvPlaylistDuration" />
 
         <TextView
             android:id="@+id/tvMinutes"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:gravity="left"
             android:padding="10sp"
             android:text="@string/tvMinutes" />
     </LinearLayout>
