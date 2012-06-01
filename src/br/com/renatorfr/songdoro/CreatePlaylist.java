@@ -4,7 +4,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ public class CreatePlaylist extends Fragment {
 
 		final SeekBar sbPlaylistDuration = (SeekBar) view.findViewById(R.id.sbPlaylistDuration);
 		final TextView tvPlaylistDuration = (TextView) view.findViewById(R.id.tvPlaylistDuration);
+		final Button btnCreatePlaylistButton = (Button) view.findViewById(R.id.btnCreatePlaylist);
 
 		sbPlaylistDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -31,7 +34,18 @@ public class CreatePlaylist extends Fragment {
 				tvPlaylistDuration.setText(progress + "");
 			}
 		});
+		
+		btnCreatePlaylistButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				getMusicList();	
+			}
+		});
 
 		return view;
+	}
+	
+	private void getMusicList() {
+//		FileHelper.SearchMusics(this);
 	}
 }
