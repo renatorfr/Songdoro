@@ -34,18 +34,18 @@ public class CreatePlaylist extends Fragment {
 				tvPlaylistDuration.setText(progress + "");
 			}
 		});
-		
+
 		btnCreatePlaylistButton.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
-				getMusicList();	
+				getMusicList();
 			}
 		});
 
 		return view;
 	}
-	
+
 	private void getMusicList() {
-//		FileHelper.SearchMusics(this);
+		ContentProviderHelper.getMusics(getActivity().getApplicationContext());
 	}
 }
