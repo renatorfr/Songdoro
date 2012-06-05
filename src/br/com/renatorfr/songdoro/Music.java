@@ -8,6 +8,7 @@ public class Music {
 
 	private String name;
 	private String path;
+	// Music duration in seconds
 	private long duration;
 
 	public String getName() {
@@ -26,10 +27,12 @@ public class Music {
 		this.path = path;
 	}
 
+	// Gets the music duration in seconds
 	public long getDuration() {
 		return duration;
 	}
 
+	// Sets the music duration in seconds
 	public void setDuration(long duration) {
 		this.duration = duration;
 	}
