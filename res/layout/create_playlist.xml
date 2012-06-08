@@ -54,4 +54,10 @@
         android:padding="10sp"
         android:text="@string/btnCreatePlaylist" />
 
+    <TextView
+        android:id="@+id/tvPlaylistFinal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

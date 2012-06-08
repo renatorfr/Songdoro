@@ -25,7 +25,8 @@ public class ContentProviderHelper {
 		Uri mAudio = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 
 		// Define the WHERE clause
-		String whereClause = maxDuration == null ? null : MediaStore.Audio.Media.DURATION + " BETWEEN " + minDuration + " AND " + maxDuration;
+		String whereClause = maxDuration == null ? null : MediaStore.Audio.Media.DURATION + " > " + minDuration + " AND "
+				+ MediaStore.Audio.Media.DURATION + " < " + maxDuration;
 
 		// Gets the cursor with the musics found
 		Cursor cursor = context.getContentResolver().query(mAudio, columns, whereClause, null, null);

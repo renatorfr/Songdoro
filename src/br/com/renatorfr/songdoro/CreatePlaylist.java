@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 public class CreatePlaylist extends Fragment {
 
+	TextView tvPlaylistFinal;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.create_playlist, container, false);
@@ -26,6 +28,7 @@ public class CreatePlaylist extends Fragment {
 		final SeekBar sbPlaylistDuration = (SeekBar) view.findViewById(R.id.sbPlaylistDuration);
 		final TextView tvPlaylistDuration = (TextView) view.findViewById(R.id.tvPlaylistDuration);
 		final Button btnCreatePlaylistButton = (Button) view.findViewById(R.id.btnCreatePlaylist);
+		tvPlaylistFinal = (TextView) view.findViewById(R.id.tvPlaylistFinal);
 
 		sbPlaylistDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -79,6 +82,10 @@ public class CreatePlaylist extends Fragment {
 				toast.show();
 				break;
 			}
+		}
+		tvPlaylistFinal.setText("Nova Playlist: /n");
+		for (Music music : newPlaylist) {
+			tvPlaylistFinal.setText(tvPlaylistFinal.getText() + music.getPath() + "/n");
 		}
 	}
 }
