@@ -59,6 +59,8 @@ public class CreatePlaylist extends Fragment {
 		// Converts the playlistDuration from minutes to seconds
 		playlistDuration = TimeUnit.MINUTES.toSeconds(playlistDuration);
 
+		long temp = 0;
+
 		// The new playlist
 		List<Music> newPlaylist = new ArrayList<Music>();
 
@@ -74,6 +76,7 @@ public class CreatePlaylist extends Fragment {
 				// Adds the music to the new playlist and subtract the music
 				// duration from the variable
 				newPlaylist.add(music);
+				temp += music.getDuration();
 				playlistDuration -= music.getDuration();
 			} else {
 				CharSequence text = "Sorry, I could not create a playlist with this duration! :(";
@@ -83,9 +86,11 @@ public class CreatePlaylist extends Fragment {
 				break;
 			}
 		}
-		tvPlaylistFinal.setText("Nova Playlist: /n");
+		tvPlaylistFinal.setText("Nova Playlist: <br>");
 		for (Music music : newPlaylist) {
-			tvPlaylistFinal.setText(tvPlaylistFinal.getText() + music.getPath() + "/n");
+			tvPlaylistFinal.setText(tvPlaylistFinal.getText().toString() + music.getName() + " - " + music.getDuration() + " // ");
 		}
+
+		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - " + temp);
 	}
 }
