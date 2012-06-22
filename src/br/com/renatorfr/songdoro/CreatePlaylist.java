@@ -64,10 +64,14 @@ public class CreatePlaylist extends Fragment {
 		// The new playlist
 		List<Music> newPlaylist = new ArrayList<Music>();
 
+		// This list will hold the TITLE_KEY field and it will be used to not
+		// repeat music
+		List<String> newPlaylistMusics = new ArrayList<String>();
+
 		// Runs while the duration is greater than 0
 		while (playlistDuration > 0) {
 			// Gets a list of musics based on it's duration
-			List<Music> listFiltered = ContentProviderHelper.getMusics(getView().getContext(), playlistDuration);
+			List<Music> listFiltered = ContentProviderHelper.getMusics(getView().getContext(), playlistDuration, newPlaylistMusics);
 
 			if (listFiltered != null) {
 				// Gets a music from the filteredList randomly
@@ -78,6 +82,10 @@ public class CreatePlaylist extends Fragment {
 				newPlaylist.add(music);
 				temp += music.getDuration();
 				playlistDuration -= music.getDuration();
+
+				// Add the TITLE_KEY field on the newPlaylistMusics
+				newPlaylistMusics.add(music.getTitleKey());
+
 			} else {
 				CharSequence text = "Sorry, I could not create a playlist with this duration! :(";
 

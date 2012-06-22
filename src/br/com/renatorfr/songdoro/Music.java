@@ -1,5 +1,6 @@
 package br.com.renatorfr.songdoro;
 
+
 public class Music {
 
 	public Music() {
@@ -10,6 +11,7 @@ public class Music {
 	private String path;
 	// Music duration in seconds
 	private long duration;
+	private String titleKey;
 
 	public String getName() {
 		return name;
@@ -35,6 +37,14 @@ public class Music {
 	// Sets the music duration in seconds
 	public void setDuration(long duration) {
 		this.duration = duration;
+	}
+
+	public String getTitleKey() {
+		return titleKey;
+	}
+
+	public void setTitleKey(String titleKey) {
+		this.titleKey = titleKey;
 	}
 
 }
