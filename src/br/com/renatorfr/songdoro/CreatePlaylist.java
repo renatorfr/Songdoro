@@ -86,6 +86,12 @@ public class CreatePlaylist extends Fragment {
 				// Add the TITLE_KEY field on the newPlaylistMusics
 				newPlaylistMusics.add(music.getTitleKey());
 
+			} else if (playlistDuration <= 0) {
+				CharSequence text = "A new and fresh playlist is waiting for you! :)";
+
+				Toast toast = Toast.makeText(getView().getContext(), text, Toast.LENGTH_LONG);
+				toast.show();
+				break;
 			} else {
 				CharSequence text = "Sorry, I could not create a playlist with this duration! :(";
 
