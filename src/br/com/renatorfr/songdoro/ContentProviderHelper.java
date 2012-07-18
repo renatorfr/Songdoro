@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,7 +22,7 @@ public class ContentProviderHelper {
 
 		// Which columns to return
 		String columns[] = new String[] { MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE,
-				MediaStore.Audio.Media.TITLE_KEY };
+				MediaStore.Audio.Media.TITLE_KEY, MediaStore.Audio.Media._ID };
 
 		// URI to the external storage
 		Uri mAudio = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -50,11 +53,60 @@ public class ContentProviderHelper {
 				music.setDuration(TimeUnit.MILLISECONDS.toSeconds(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))));
 				music.setName(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
 				music.setTitleKey(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY)));
+				music.setId(cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID)));
 
 				musicList.add(music);
 			} while (cursor.moveToNext());
 		}
 
+		cursor.close();
+
 		return musicList;
+	}
+
+	public static void SavePlaylist(Context context, List<Music> playList, String newPlaylistName) {
+
+		// Gets the content resolver
+		ContentResolver contentResolver = context.getContentResolver();
+
+		Uri playlistsUri = MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;
+
+		Cursor cursor = contentResolver.query(playlistsUri, new String[] { "*" }, null, null, null);
+
+		long playlistId = 0;
+
+		cursor.moveToFirst();
+		do {
+			String playlistName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Playlists.NAME));
+			if (playlistName.equalsIgnoreCase(newPlaylistName)) {
+				playlistId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Playlists._ID));
+				break;
+			}
+		} while (cursor.moveToNext());
+
+		cursor.close();
+
+		if (playlistId != 0) {
+			Uri deleteUri = ContentUris.withAppendedId(playlistsUri, playlistId);
+
+			contentResolver.delete(deleteUri, null, null);
+		}
+
+		ContentValues values = new ContentValues();
+		values.put(MediaStore.Audio.Playlists.NAME, newPlaylistName);
+		values.put(MediaStore.Audio.Playlists.DATE_MODIFIED, System.currentTimeMillis());
+
+		Uri newPlaylistUri = contentResolver.insert(playlistsUri, values);
+
+		Uri insertUri = Uri.withAppendedPath(newPlaylistUri, MediaStore.Audio.Playlists.Members.CONTENT_DIRECTORY);
+
+		int order = 1;
+
+		for (Music music : playList) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(MediaStore.Audio.Playlists.Members.PLAY_ORDER, order++);
+			contentValues.put(MediaStore.Audio.Playlists.Members.AUDIO_ID, music.getId());
+			contentResolver.insert(insertUri, contentValues);
+		}
 	}
 }

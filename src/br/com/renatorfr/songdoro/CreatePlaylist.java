@@ -18,13 +18,15 @@ import android.widget.Toast;
 
 public class CreatePlaylist extends Fragment {
 
+	EditText edtPlaylistName;
+
 	TextView tvPlaylistFinal;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.create_playlist, container, false);
 
-		final EditText edtPlaylistName = (EditText) view.findViewById(R.id.txtPlaylistName);
+		edtPlaylistName = (EditText) view.findViewById(R.id.txtPlaylistName);
 		final SeekBar sbPlaylistDuration = (SeekBar) view.findViewById(R.id.sbPlaylistDuration);
 		final TextView tvPlaylistDuration = (TextView) view.findViewById(R.id.tvPlaylistDuration);
 		final Button btnCreatePlaylistButton = (Button) view.findViewById(R.id.btnCreatePlaylist);
@@ -56,6 +58,7 @@ public class CreatePlaylist extends Fragment {
 	}
 
 	protected void createPlaylist(String playlistName, Long playlistDuration) {
+
 		// Converts the playlistDuration from minutes to seconds
 		playlistDuration = TimeUnit.MINUTES.toSeconds(playlistDuration);
 
@@ -106,5 +109,8 @@ public class CreatePlaylist extends Fragment {
 		}
 
 		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - " + temp);
+
+		// Save the new Playlist using the Content Provider
+		ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString());
 	}
 }
