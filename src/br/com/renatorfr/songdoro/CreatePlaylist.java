@@ -111,6 +111,6 @@ public class CreatePlaylist extends Fragment {
 		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - " + temp);
 
 		// Save the new Playlist using the Content Provider
-		ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString());
+		ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString().trim());
 	}
 }
