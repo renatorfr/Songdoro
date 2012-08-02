@@ -12,45 +12,38 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SeekBar;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreatePlaylist extends Fragment {
 
-	EditText edtPlaylistName;
+	private final static int NUMBERPICKER_MAX_VALUE = 180;
+	private final static int NUMBERPICKER_MIN_VALUE = 1;
+	private final static int NUMBERPICKER_VALUE = 30;
 
+	View view;
+	EditText edtPlaylistName;
 	TextView tvPlaylistFinal;
+	NumberPicker npDuration;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.create_playlist, container, false);
+		view = inflater.inflate(R.layout.create_playlist, container, false);
 
 		edtPlaylistName = (EditText) view.findViewById(R.id.txtPlaylistName);
-		final SeekBar sbPlaylistDuration = (SeekBar) view.findViewById(R.id.sbPlaylistDuration);
-		final TextView tvPlaylistDuration = (TextView) view.findViewById(R.id.tvPlaylistDuration);
 		final Button btnCreatePlaylistButton = (Button) view.findViewById(R.id.btnCreatePlaylist);
 		tvPlaylistFinal = (TextView) view.findViewById(R.id.tvPlaylistFinal);
 
-		sbPlaylistDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			public void onStopTrackingTouch(SeekBar seekBar) {
-
-			}
-
-			public void onStartTrackingTouch(SeekBar seekBar) {
-
-			}
-
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				tvPlaylistDuration.setText(progress + "");
-			}
-		});
+		npDuration = (NumberPicker) view.findViewById(R.id.npDuration);
+		npDuration.setMinValue(NUMBERPICKER_MIN_VALUE);
+		npDuration.setMaxValue(NUMBERPICKER_MAX_VALUE);
+		npDuration.setValue(NUMBERPICKER_VALUE);
 
 		btnCreatePlaylistButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				createPlaylist(edtPlaylistName.getText().toString(), Long.parseLong(tvPlaylistDuration.getText().toString()));
+				createPlaylist(edtPlaylistName.getText().toString(), (long) npDuration.getValue());
 			}
 		});
 
@@ -74,7 +67,7 @@ public class CreatePlaylist extends Fragment {
 		// Runs while the duration is greater than 0
 		while (playlistDuration > 0) {
 			// Gets a list of musics based on it's duration
-			List<Music> listFiltered = ContentProviderHelper.getMusics(getView().getContext(), playlistDuration, newPlaylistMusics);
+			List<Music> listFiltered = ContentProviderHelper.getMusics(view.getContext(), playlistDuration, newPlaylistMusics);
 
 			if (listFiltered != null) {
 				// Gets a music from the filteredList randomly
@@ -103,12 +96,13 @@ public class CreatePlaylist extends Fragment {
 				break;
 			}
 		}
-		tvPlaylistFinal.setText("Nova Playlist: <br>");
+		tvPlaylistFinal.setText("Nova Playlist: ");
 		for (Music music : newPlaylist) {
-			tvPlaylistFinal.setText(tvPlaylistFinal.getText().toString() + music.getName() + " - " + music.getDuration() + " // ");
+			tvPlaylistFinal.setText(tvPlaylistFinal.getText().toString() + music.getName() + " // ");
 		}
 
-		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - " + temp);
+		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - Total: " + (double) temp / 60);
+		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - Duration: " + (double) playlistDuration / 60);
 
 		// Save the new Playlist using the Content Provider
 		ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString().trim());

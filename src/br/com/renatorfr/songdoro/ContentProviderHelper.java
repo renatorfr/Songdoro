@@ -14,7 +14,7 @@ import android.provider.MediaStore;
 
 public class ContentProviderHelper {
 
-	private final static int DURATION_RANGE = 3000;
+	private final static int DURATION_RANGE = 10000;
 
 	public static List<Music> getMusics(Context context, Long duration, List<String> newPlaylistMusics) {
 		// Defining the minimum and maximum duration of the music
