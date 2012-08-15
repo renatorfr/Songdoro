@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreatePlaylist extends Fragment {
@@ -21,11 +21,15 @@ public class CreatePlaylist extends Fragment {
 	private final static int NUMBERPICKER_MAX_VALUE = 180;
 	private final static int NUMBERPICKER_MIN_VALUE = 1;
 	private final static int NUMBERPICKER_VALUE = 30;
+	private final static String PD_TITLE_STRING = "Wait...";
+	private final static String PD_MESSAGE_STRING = "Creating the best playlist ever...";
+	private final static int NUMBER_OF_ATTEMPTS = 3;
+	private final static int DURATION_RANGE = 5000;
 
 	View view;
 	EditText edtPlaylistName;
-	TextView tvPlaylistFinal;
 	NumberPicker npDuration;
+	ProgressDialog pdDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +37,6 @@ public class CreatePlaylist extends Fragment {
 
 		edtPlaylistName = (EditText) view.findViewById(R.id.txtPlaylistName);
 		final Button btnCreatePlaylistButton = (Button) view.findViewById(R.id.btnCreatePlaylist);
-		tvPlaylistFinal = (TextView) view.findViewById(R.id.tvPlaylistFinal);
 
 		npDuration = (NumberPicker) view.findViewById(R.id.npDuration);
 		npDuration.setMinValue(NUMBERPICKER_MIN_VALUE);
@@ -52,10 +55,14 @@ public class CreatePlaylist extends Fragment {
 
 	protected void createPlaylist(String playlistName, Long playlistDuration) {
 
+		// Starts the progress dialog
+		pdDialog = ProgressDialog.show(view.getContext(), PD_TITLE_STRING, PD_MESSAGE_STRING);
+
 		// Converts the playlistDuration from minutes to seconds
 		playlistDuration = TimeUnit.MINUTES.toSeconds(playlistDuration);
 
-		long temp = 0;
+		// Save the original playlist duration for re-use
+		Long playlistDurationTemp = playlistDuration;
 
 		// The new playlist
 		List<Music> newPlaylist = new ArrayList<Music>();
@@ -64,11 +71,15 @@ public class CreatePlaylist extends Fragment {
 		// repeat music
 		List<String> newPlaylistMusics = new ArrayList<String>();
 
-		// Runs while the duration is greater than 0
-		while (playlistDuration > 0) {
-			// Gets a list of musics based on it's duration
-			List<Music> listFiltered = ContentProviderHelper.getMusics(view.getContext(), playlistDuration, newPlaylistMusics);
+		// Number of attempts
+		int attempts = 1;
 
+		// Runs while the duration is greater than 0
+		while (playlistDurationTemp > 0) {
+			// Gets a list of musics based on it's duration
+			List<Music> listFiltered = ContentProviderHelper.getMusics(view.getContext(), playlistDurationTemp, DURATION_RANGE, newPlaylistMusics);
+
+			// If there is any music shorter than the duration remaining
 			if (listFiltered != null) {
 				// Gets a music from the filteredList randomly
 				Music music = listFiltered.get((int) (Math.random() * listFiltered.size()));
@@ -76,18 +87,34 @@ public class CreatePlaylist extends Fragment {
 				// Adds the music to the new playlist and subtract the music
 				// duration from the variable
 				newPlaylist.add(music);
-				temp += music.getDuration();
-				playlistDuration -= music.getDuration();
+				playlistDurationTemp -= music.getDuration();
 
 				// Add the TITLE_KEY field on the newPlaylistMusics
 				newPlaylistMusics.add(music.getTitleKey());
 
-			} else if (playlistDuration <= 0) {
-				CharSequence text = "A new and fresh playlist is waiting for you! :)";
+				// If the duration is within the range
+			} else if ((playlistDurationTemp <= TimeUnit.MILLISECONDS.toSeconds(DURATION_RANGE))
+					&& (playlistDurationTemp >= 0 - TimeUnit.MILLISECONDS.toSeconds(DURATION_RANGE))) {
+
+				// Save the new Playlist using the Content Provider
+				ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString().trim());
+
+				CharSequence text = "A new and fresh playlist is waiting for you!";
 
 				Toast toast = Toast.makeText(getView().getContext(), text, Toast.LENGTH_LONG);
 				toast.show();
 				break;
+
+				// If the duration is not within the range and the number of
+				// attempts is lower than the max number of attempts
+			} else if (attempts <= NUMBER_OF_ATTEMPTS) {
+				attempts++;
+				newPlaylist.clear();
+				newPlaylistMusics.clear();
+				playlistDurationTemp = playlistDuration;
+
+				// If the duration is not within the range and the number of
+				// attempts is greater than the max number of attempts
 			} else {
 				CharSequence text = "Sorry, I could not create a playlist with this duration! :(";
 
@@ -96,15 +123,8 @@ public class CreatePlaylist extends Fragment {
 				break;
 			}
 		}
-		tvPlaylistFinal.setText("Nova Playlist: ");
-		for (Music music : newPlaylist) {
-			tvPlaylistFinal.setText(tvPlaylistFinal.getText().toString() + music.getName() + " // ");
-		}
 
-		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - Total: " + (double) temp / 60);
-		tvPlaylistFinal.setText(tvPlaylistFinal.getText() + " - Duration: " + (double) playlistDuration / 60);
-
-		// Save the new Playlist using the Content Provider
-		ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString().trim());
+		// Stops the progress dialog
+		pdDialog.dismiss();
 	}
 }

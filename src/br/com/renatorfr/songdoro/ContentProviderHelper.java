@@ -14,11 +14,9 @@ import android.provider.MediaStore;
 
 public class ContentProviderHelper {
 
-	private final static int DURATION_RANGE = 10000;
-
-	public static List<Music> getMusics(Context context, Long duration, List<String> newPlaylistMusics) {
+	public static List<Music> getMusics(Context context, Long duration, int DurationRange, List<String> newPlaylistMusics) {
 		// Defining the minimum and maximum duration of the music
-		Long maxDuration = TimeUnit.SECONDS.toMillis(duration) + DURATION_RANGE;
+		Long maxDuration = TimeUnit.SECONDS.toMillis(duration) + DurationRange;
 
 		// Which columns to return
 		String columns[] = new String[] { MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.TITLE,
