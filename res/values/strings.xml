@@ -7,5 +7,6 @@
     <string name="tvMinutes">Minutes</string>
     <string name="btnCreatePlaylist">Create</string>
     <string name="tvPlaylistDuration">30</string>
+    <string name="chbPlaylistName">Use the duration as playlist name</string>
 
 </resources>

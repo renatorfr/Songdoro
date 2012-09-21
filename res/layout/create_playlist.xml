@@ -11,9 +11,13 @@
         android:ems="10"
         android:hint="@string/txtPlaylistnameHint"
         android:padding="10sp" >
-
-        <requestFocus />
     </EditText>
+
+    <CheckBox
+        android:id="@+id/chbPlaylistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chbPlaylistName" />
 
     <NumberPicker
         android:id="@+id/npDuration"
@@ -21,25 +25,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="10sp" />
-
+
     <Button
         android:id="@+id/btnCreatePlaylist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:padding="10sp"
-        android:text="@string/btnCreatePlaylist" />
+        android:text="@string/btnCreatePlaylist" >
+
+        <requestFocus />
+    </Button>
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
     </ScrollView>
 
 </LinearLayout>

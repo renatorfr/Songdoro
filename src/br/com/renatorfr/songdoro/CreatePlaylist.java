@@ -12,24 +12,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
 public class CreatePlaylist extends Fragment {
 
-	private final static int NUMBERPICKER_MAX_VALUE = 180;
-	private final static int NUMBERPICKER_MIN_VALUE = 1;
-	private final static int NUMBERPICKER_VALUE = 30;
-	private final static String PD_TITLE_STRING = "Wait...";
-	private final static String PD_MESSAGE_STRING = "Creating the best playlist ever...";
-	private final static int NUMBER_OF_ATTEMPTS = 3;
-	private final static int DURATION_RANGE = 5000;
+	private final static int	NUMBERPICKER_MAX_VALUE	= 180;
+	private final static int	NUMBERPICKER_MIN_VALUE	= 1;
+	private final static int	NUMBERPICKER_VALUE		= 30;
+	private final static String	PD_TITLE_STRING			= "Wait...";
+	private final static String	PD_MESSAGE_STRING		= "Creating the best playlist ever...";
+	private final static int	NUMBER_OF_ATTEMPTS		= 3;
+	private final static int	DURATION_RANGE			= 5000;
 
-	View view;
-	EditText edtPlaylistName;
-	NumberPicker npDuration;
-	ProgressDialog pdDialog;
+	View						view;
+	EditText					edtPlaylistName;
+	NumberPicker				npDuration;
+	ProgressDialog				pdDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,11 +47,30 @@ public class CreatePlaylist extends Fragment {
 		btnCreatePlaylistButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				createPlaylist(edtPlaylistName.getText().toString(), (long) npDuration.getValue());
+				String playlistName = edtPlaylistName.getText().toString().trim().equals("") ? String.valueOf(npDuration.getValue())
+						: edtPlaylistName.getText().toString();
+				createPlaylist(playlistName, (long) npDuration.getValue());
 			}
 		});
 
+		final CheckBox chbPlaylistName = (CheckBox) view.findViewById(R.id.chbPlaylistName);
+
+		chbPlaylistName.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				UseDurationAsPlaylistName(chbPlaylistName.isChecked());
+			}
+		});
+
+		chbPlaylistName.setChecked(true);
+		UseDurationAsPlaylistName(true);
+
 		return view;
+	}
+
+	protected void UseDurationAsPlaylistName(boolean checked) {
+		edtPlaylistName.setEnabled(!checked);
+		edtPlaylistName.setText(null);
 	}
 
 	protected void createPlaylist(String playlistName, Long playlistDuration) {
@@ -97,7 +117,7 @@ public class CreatePlaylist extends Fragment {
 					&& (playlistDurationTemp >= 0 - TimeUnit.MILLISECONDS.toSeconds(DURATION_RANGE))) {
 
 				// Save the new Playlist using the Content Provider
-				ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, edtPlaylistName.getText().toString().trim());
+				ContentProviderHelper.SavePlaylist(getView().getContext(), newPlaylist, playlistName.trim());
 
 				CharSequence text = "A new and fresh playlist is waiting for you!";
 
